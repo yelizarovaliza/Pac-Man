@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Ghost
   layers:
   - Default
   - TransparentFX
@@ -12,7 +13,7 @@ TagManager:
   - Water
   - UI
   - WallLayer
-  - 
+  - Ghost
   - 
   - 
   - 
@@ -46,6 +47,9 @@ TagManager:
     locked: 0
   - name: Player
     uniqueID: 3172779861
+    locked: 0
+  - name: Ghost
+    uniqueID: 2360068535
     locked: 0
   m_RenderingLayers:
   - Default
