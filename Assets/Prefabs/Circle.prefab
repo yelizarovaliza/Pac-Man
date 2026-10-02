@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2288524339761712901}
   - component: {fileID: 753155925558852586}
   - component: {fileID: 7449519088422622442}
+  - component: {fileID: -2252130819101931516}
   m_Layer: 0
   m_Name: Circle
   m_TagString: Untagged
@@ -156,3 +157,17 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &-2252130819101931516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 11731913513222089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4e6d2e102febf940b384131e71f0866, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pellet
+  scoreValue: 10
+  collectSound: {fileID: 8300000, guid: bdcda19e1e184964485afe222b113e95, type: 3}

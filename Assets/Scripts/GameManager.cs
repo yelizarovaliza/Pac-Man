@@ -1,18 +1,21 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    [Header("Settings")]
-    public int targetPellets = 50;
-    private int collectedPellets = 0;
-    private int score = 0;
+    [Header("Configuration")]
+    public GameConfig config; // Перетягни сюди наш ScriptableObject файл
 
-    [Header("References")]
-    public GameUI gameUI;
-    public GameObject winPanel;
+    private int collectedPellets = 0;  
+    private int score = 0;             
+
+    [Header("UI References")]
+    public GameUI gameUI;              
+    public GameObject resultPanel;     
+    public TextMeshProUGUI resultText; 
 
     void Awake()
     {
@@ -22,49 +25,64 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        // Ініціалізуємо початковий стан UI на старті гри
-        if (gameUI != null)
+        if (resultPanel != null)
+        {
+            resultPanel.SetActive(false);
+        }
+
+        if (gameUI != null && config != null)
         {
             gameUI.UpdateScore(score);
-            gameUI.UpdatePellets(collectedPellets, targetPellets);
+            gameUI.UpdatePellets(collectedPellets, config.targetPellets);
         }
     }
 
-    // Метод, який викликається, коли Пакман з'їв пелет
     public void CollectPellet()
     {
         collectedPellets++;
-        score += 10; // Кожен пелет дає 10 очок
+        score += (config != null ? config.pelletScoreValue : 10); 
 
-        // Передаємо нові дані в UI
-        if (gameUI != null)
+        if (gameUI != null && config != null)
         {
             gameUI.UpdateScore(score);
-            gameUI.UpdatePellets(collectedPellets, targetPellets);
+            gameUI.UpdatePellets(collectedPellets, config.targetPellets);
         }
 
-        Debug.Log("Зібрано пелетів: " + collectedPellets + "/" + targetPellets);
-
-        if (collectedPellets >= targetPellets)
+        int target = config != null ? config.targetPellets : 50;
+        if (collectedPellets >= target)
         {
-            WinGame();
+            TriggerWin();
         }
     }
 
-    void WinGame()
+    public void TriggerWin()
     {
-        Debug.Log("ПЕРЕМОГА!");
-        Time.timeScale = 0f;
+        ShowResultScreen("ПЕРЕМОГА!");
+    }
 
-        if (winPanel != null)
+    public void TriggerGameOver()
+    {
+        ShowResultScreen("ГРУ ЗАВЕРШЕНО");
+    }
+
+    void ShowResultScreen(string message)
+    {
+        Time.timeScale = 0f; 
+
+        if (resultText != null)
         {
-            winPanel.SetActive(true);
+            resultText.text = message;
+        }
+
+        if (resultPanel != null)
+        {
+            resultPanel.SetActive(true); 
         }
     }
 
     public void RestartGame()
     {
-        Time.timeScale = 1f;
+        Time.timeScale = 1f; 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

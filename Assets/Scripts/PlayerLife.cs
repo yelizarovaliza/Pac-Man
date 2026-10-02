@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerLife : MonoBehaviour
 {
@@ -6,13 +7,15 @@ public class PlayerLife : MonoBehaviour
     private Vector2 startPosition;
 
     [Header("References")]
-    public GameUI gameUI; // Посилання на UI для оновлення життів
+    public GameUI gameUI; 
+    public MonoBehaviour playerMovementScript;
+    private SpriteRenderer spriteRenderer;
 
     void Start()
     {
         startPosition = transform.position;
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
-        // Встановлюємо початкову кількість життів на екрані
         if (gameUI != null)
         {
             gameUI.UpdateLives(lives);
@@ -23,16 +26,30 @@ public class PlayerLife : MonoBehaviour
     {
         if (other.CompareTag("Ghost"))
         {
-            LoseLife();
+            // Запускаємо процес зіткнення замість миттєвої смерті
+            StartCoroutine(HandleHitRoutine());
         }
     }
 
-    void LoseLife()
+    IEnumerator HandleHitRoutine()
     {
+        if (playerMovementScript != null)
+        {
+            playerMovementScript.enabled = false;
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            if (spriteRenderer != null) spriteRenderer.enabled = false;
+            yield return new WaitForSeconds(0.15f); // Час зникнення
+
+            if (spriteRenderer != null) spriteRenderer.enabled = true;
+            yield return new WaitForSeconds(0.15f); // Час появи
+        }
+
         lives--;
         Debug.Log("Життя втрачено! Залишилось: " + lives);
 
-        // Оновлюємо UI життів
         if (gameUI != null)
         {
             gameUI.UpdateLives(lives);
@@ -41,12 +58,21 @@ public class PlayerLife : MonoBehaviour
         if (lives > 0)
         {
             transform.position = startPosition;
+
+            if (playerMovementScript != null)
+            {
+                playerMovementScript.enabled = true;
+            }
         }
         else
         {
             Debug.Log("Game Over!");
             Time.timeScale = 0f;
-            // Тут у майбутньому можна показати панель Game Over
+
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.TriggerGameOver();
+            }
         }
     }
 }
